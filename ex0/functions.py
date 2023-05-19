@@ -1,6 +1,8 @@
 import numpy as np
+import os
 from typing import List, Tuple
 import cv2
+
 
 t_image_list = List[np.array]
 t_str_list = List[str]
@@ -19,7 +21,9 @@ def show_images(images: t_image_list, names: t_str_list) -> None:
     Returns:
         None
     """
-    raise NotImplementedError
+    for image, name in zip(images, names):
+        cv2.imshow(name, image)
+    cv2.waitKey(delay=0)
 
 def save_images(images: t_image_list, filenames: t_str_list, **kwargs) -> None:
     """Saves one or more images at once.
@@ -34,7 +38,8 @@ def save_images(images: t_image_list, filenames: t_str_list, **kwargs) -> None:
     Returns:
         None
     """
-    raise NotImplementedError
+    for image, filename in zip(images, filenames):
+        cv2.imwrite(os.path.join("data", "ex0", filename), image)
 
 def scale_down(image: np.array) -> np.array:
     """Returns an image half the size of the original.
@@ -45,7 +50,8 @@ def scale_down(image: np.array) -> np.array:
     Returns:
         A numpy array with an opencv image half the size of the original image
     """
-    raise NotImplementedError
+    # return cv2.resize(image, dsize=(round(image.shape[1]*0.5),round(image.shape[0]*0.5)))
+    return cv2.resize(image, dsize=(0,0), fx=0.5, fy=0.5)
 
 def separate_channels(colored_image: np.array) -> t_image_triplet:
     """Takes an BGR color image and splits it three images.
@@ -57,4 +63,15 @@ def separate_channels(colored_image: np.array) -> t_image_triplet:
         A tuple with three BGR images the first one containing only the Blue channel active, the second one only the
         green, and the third one only the red.
     """
-    raise NotImplementedError
+    rows = colored_image.shape[0]
+    cols = colored_image.shape[1]
+    
+    blue = np.zeros(shape=(rows, cols, 3))
+    green = np.zeros(shape=(rows, cols, 3))
+    red = np.zeros(shape=(rows, cols, 3))
+
+    blue[:, :, 0] = colored_image[:, :, 0]
+    green[:, :, 1] = colored_image[:, :, 1]
+    red[:, :, 2] = colored_image[:, :, 2]
+
+    return (blue, green, red)
