@@ -9,20 +9,21 @@ Welcome to the Computer Vision repository for the Summer'23 semester at [Friedri
 Follow these steps to set up the environment:
 
 1. Install [Python 3.x](https://www.python.org/).
-2. Create and activate a virtual environment.
+2. Download and install [Anaconda](https://www.anaconda.com/download) Distribution on your machine.
+3. Create and activate a conda environment (optional: choose a specific python version, in my case I used python=3.9).
 ```bash
-python3 -m venv <env_name>
-source <env_name>/bin/activate
+conda create -n <env_name> python=<version>
+conda activate <env_name>
 ```
-3. Download and install the necessary Python packages.
+4. Install the required packages from the respective channels.
 ```bash
-pip install opencv-python numpy pytest
+conda install -c conda-forge opencv numpy pytest
 ```
-4. To run test scripts, use the following commands.
+5. To run test scripts, use the following commands.
 ```bash
 python3 bin/run_ex0.py
 ```
-5. To execute test scripts, run the following commands.
+6. To execute test scripts, run the following commands.
 ```bash
 pytest test/test_ex0.py
 ```
