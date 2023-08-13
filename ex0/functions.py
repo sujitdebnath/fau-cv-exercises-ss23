@@ -22,7 +22,12 @@ def show_images(images: t_image_list, names: t_str_list) -> None:
         None
     """
     for image, name in zip(images, names):
+        # Convert image type from float64 to uint8 for cv2.imshow
+        if image.dtype !="uint8":
+            image = np.clip(image, 0, 255).astype(np.uint8)    
         cv2.imshow(name, image)
+    
+    # Press Q on keyboard to exit
     cv2.waitKey(delay=0)
 
 def save_images(images: t_image_list, filenames: t_str_list, **kwargs) -> None:
