@@ -17,18 +17,27 @@ def compute_harris_response(I: np.array, k: float = 0.06) -> Tuple[np.array]:
     assert I.dtype == np.float32
 
     # Step 1: Compute dx and dy with cv2.Sobel. (2 Lines)
-
+    Idx = cv2.Sobel(I, ddepth=cv2.CV_32F, dx=1, dy=0, ksize=3)
+    Idy = cv2.Sobel(I, ddepth=cv2.CV_32F, dx=0, dy=1, ksize=3)
 
     # Step 2: Ixx Iyy Ixy from Idx and Idy (3 Lines)
-
+    Ixx = np.square(Idx)
+    Iyy = np.square(Idy)
+    Ixy = Idx * Idy
 
     # Step 3: compute A, B, C from Ixx, Iyy, Ixy with cv2.GaussianBlur (5 Lines)
-
+    sigma = 1.0
+    k_size = 3
+    A = cv2.GaussianBlur(Ixx, (k_size, k_size), sigma)
+    B = cv2.GaussianBlur(Iyy, (k_size, k_size), sigma)
+    C = cv2.GaussianBlur(Ixy, (k_size, k_size), sigma)
 
     #Step 4:  Compute the harris response with the determinant and the trace of T (see announcement) (4 lines)
+    det_T = A * B - C**2
+    trace_T = A + B
+    R = det_T - k * trace_T**2
 
-
-    raise NotImplementedError
+    return R, A, B, C, Idx, Idy
 
 
 def detect_corners(R: np.array, threshold: float = 0.1) -> Tuple[np.array, np.array]:
