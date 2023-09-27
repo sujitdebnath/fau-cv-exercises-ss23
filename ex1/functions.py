@@ -89,19 +89,28 @@ def detect_edges(R: np.array, edge_threshold: float = -0.01, epsilon=-.01) -> np
     Returns:
         A boolean image with edge pixels set to True.
     """
-    # Step 1 (recommended) : pad the response image to facilitate vectorization (1 line)
-
+    # Step 1: pad the response image to facilitate vectorization (1 line)
+    Rnorm = R / R.max()
+    R_padded = np.pad(Rnorm, ((1, 1), (1, 1)), mode='constant', constant_values=0)
 
     # Step 2 (recommended) : Calculate significant response pixels (1 line)
-
+    neighborhoods_shape = (R.shape[0], R.shape[1], 3, 3)
+    neighborhoods = np.lib.stride_tricks.as_strided(
+        R_padded,
+        shape = neighborhoods_shape,
+        strides = (R_padded.strides[0], R_padded.strides[1], R_padded.strides[0], R_padded.strides[1]),
+        writeable = False
+    )
 
     # Step 3 (recommended) : create two images with the smaller x-axis and y-axis neighbors respectively (2 lines).
-
+    x_neighbors = neighborhoods[:, :, :, 1:-1]
+    y_neighbors = neighborhoods[:, :, 1:-1, :]
 
     # Step 4 (recommended) : Calculate pixels that are lower than either their x-axis or y-axis neighbors (1 line)
-
+    xmin = x_neighbors.min(axis=(2,3))
+    ymin = y_neighbors.min(axis=(2,3))
 
     # Step 5 (recommended) : Calculate valid edge pixels by combining significant and axis_minimal pixels (1 line)
+    edge_pixels = (Rnorm <= edge_threshold) & ((Rnorm == xmin) | (Rnorm == ymin))
 
-
-    raise NotImplementedError
+    return edge_pixels

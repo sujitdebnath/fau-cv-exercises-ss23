@@ -26,4 +26,4 @@ if __name__ == "__main__":
     edges = ex1.detect_edges(R, edge_threshold=-.01)
     drawn_edges = ex1.draw_mask(input, edges, color=(255, 0, 0))
     ex1.show_images([.5 + R, edges, drawn_edges], ["Harris Response", "Edges", "Drawn Edges"], tile_yx=(400, 400))
-    ex1.save_images([edges, drawn_edges], [os.path.join("results", "ex1", f) for f in ["edges.png", "drawn_edges.png"]])
+    ex1.save_images([edges, drawn_edges], [os.path.join("data", "ex1", f) for f in ["edges.png", "drawn_edges.png"]])
