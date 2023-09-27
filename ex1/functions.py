@@ -32,7 +32,7 @@ def compute_harris_response(I: np.array, k: float = 0.06) -> Tuple[np.array]:
     B = cv2.GaussianBlur(Iyy, (k_size, k_size), sigma)
     C = cv2.GaussianBlur(Ixy, (k_size, k_size), sigma)
 
-    #Step 4:  Compute the harris response with the determinant and the trace of T (see announcement) (4 lines)
+    # Step 4:  Compute the harris response with the determinant and the trace of T (see announcement) (4 lines)
     det_T = A * B - C**2
     trace_T = A + B
     R = det_T - k * trace_T**2
@@ -52,22 +52,29 @@ def detect_corners(R: np.array, threshold: float = 0.1) -> Tuple[np.array, np.ar
     Returns:
         A tuple of two 1D integer arrays containing the x and y coordinates of key-points in the image.
     """
-    # Step 1 (recommended) : pad the response image to facilitate vectorization (1 line)
+    # Step 1: pad the response image to facilitate vectorization (1 line)
+    Rnorm = R / R.max()
+    R_padded = np.pad(Rnorm, ((1, 1), (1, 1)), mode='constant', constant_values=0)
 
+    # Step 2: create one image for every offset in the 3x3 neighborhood (6 lines).
+    R_offsets_shape = (R.shape[0], R.shape[1], 3, 3)
+    R_offsets = np.lib.stride_tricks.as_strided(
+        R_padded,
+        shape = R_offsets_shape,
+        strides = (R_padded.strides[0], R_padded.strides[1], R_padded.strides[0], R_padded.strides[1]),
+        writeable = False
+    )
 
-    # Step 2 (recommended) : create one image for every offset in the 3x3 neighborhood (6 lines).
+    # Step 3: compute the greatest neighbor of every pixel (1 line)
+    max_neighbors = np.max(R_offsets, axis=(2,3))
 
+    # Step 4: Compute a boolean image with only all key-points set to True (1 line)
+    is_keypoint = (Rnorm.T==max_neighbors.T) & (Rnorm.T>threshold).astype(np.int16)
 
-    # Step 3 (recommended) : compute the greatest neighbor of every pixel (1 line)
+    # Step 5: Use np.nonzero to compute the locations of the key-points from the boolean image (1 line)
+    keypoints = np.nonzero(is_keypoint)
 
-
-    # Step 4 (recommended) : Compute a boolean image with only all key-points set to True (1 line)
-
-
-    # Step 5 (recommended) : Use np.nonzero to compute the locations of the key-points from the boolean image (1 line)
-
-
-    raise NotImplementedError
+    return keypoints
 
 
 def detect_edges(R: np.array, edge_threshold: float = -0.01, epsilon=-.01) -> np.array:
