@@ -14,7 +14,7 @@ if __name__ == "__main__":
     image_names = ["R", "A", "B", "C", "Idx", "Idy"]
     # 0 Centered images are shifted from black to gray for 0. by adding .5
     ex1.show_images([input, .5 + R, A, B, .5 + C, .5 + Idx, .5 + Idy], ["input"] + image_names, tile_yx=(400, 400))
-    output_paths = [os.path.join("results", "ex1", f"{name}.png") for name in image_names]
+    output_paths = [os.path.join("data", "ex1", f"{name}.png") for name in image_names]
     ex1.save_images([.5 + R, A, B, .5 + C, .5 + Idx, .5 + Idy], output_paths)
 
     points = ex1.detect_corners(R, threshold=.1)
@@ -26,4 +26,3 @@ if __name__ == "__main__":
     drawn_edges = ex1.draw_mask(input, edges, color=(255, 0, 0))
     ex1.show_images([.5 + R, edges, drawn_edges], ["Harris Response", "Edges", "Drawn Edges"], tile_yx=(400, 400))
     ex1.save_images([edges, drawn_edges], [os.path.join("results", "ex1", f) for f in ["edges.png", "drawn_edges.png"]])
-
