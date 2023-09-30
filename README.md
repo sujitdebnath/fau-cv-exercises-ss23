@@ -18,6 +18,8 @@ conda activate <env_name>
 4. Install the required packages from the respective channels.
 ```bash
 conda install -c conda-forge opencv numpy pytest line_profiler
+conda install -c anaconda scipy
+pip3 install fargv
 ```
 5. To run test scripts, use the following commands.
 ```bash

@@ -30,7 +30,13 @@ def extract_features(img: t_img, num_features: int = 500) -> Tuple[t_points, t_d
         A tuple containing a numpy array of [N x 2] and numpy array of [N x 32]
     """
     #TODO : Hint - you will need cv2.ORB_create
-    raise NotImplementedError
+    orb = cv2.ORB_create(nfeatures=num_features, scoreType=cv2.ORB_FAST_SCORE)
+    kp, des = orb.detectAndCompute(img, None)
+
+    kp = np.array([p.pt for p in kp]).astype(np.double)
+    des = np.array(des).astype(np.double)
+    
+    return (kp,des)
 
 
 def filter_and_align_descriptors(f1: Tuple[t_points, t_descriptors], f2: Tuple[t_points, t_descriptors],
